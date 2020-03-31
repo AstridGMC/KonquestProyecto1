@@ -202,4 +202,14 @@ public class Jugador {
         }
         return tamFlota;
     }
+    
+    public int buscarIndiceJugador(ArrayList<Jugador> jugadores, String nombre){
+        int indice=21;
+        for (int i = 0; i < jugadores.size(); i++) {
+            if(jugadores.get(i).getNombre().equals(nombre)){
+                indice = i;
+            }
+        }
+        return indice;
+    }
 }

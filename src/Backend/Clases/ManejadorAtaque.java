@@ -1,6 +1,8 @@
 
 package Backend.Clases;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author astridmc
@@ -25,6 +27,9 @@ public class ManejadorAtaque {
         destino.setNaves(destino.getNaves()- navesRestar);
         if(destino.getNaves()<=0){
             destino.setNaves(0);
+            destino.setNeutral(false);
+            destino.setImagenPath(destino.elegirImagen());
+            
             return true;
         }else{
             return false;
@@ -36,7 +41,7 @@ public class ManejadorAtaque {
         int navesRestar = (int) origen.getPorcentajeMuertes()* origen.getNaves() * destino.getNaves();
         destino.setNaves(destino.getNaves()+ navesRestar);
     }
-    
+   
     public int determinarTurno(int i, int j, int a, int b){
         int turno  = (Integer)(((Math.abs(i-a))-(Math.abs(j-b)))/2);
         return turno;
@@ -47,6 +52,16 @@ public class ManejadorAtaque {
         planetas[0] = origen;
         planetas[1]=destino;
         return planetas;
+    }
+    
+    public Accion verificarTurno(ArrayList<Accion> acciones, int turnoActual){
+        Accion accion = null;
+        for (int i = 0; i < acciones.size(); i++) {
+            if(acciones.get(i).getTurnoAllegar()==turnoActual){
+                accion = acciones.get(i);
+            }
+        }
+        return accion;
     }
     
 }

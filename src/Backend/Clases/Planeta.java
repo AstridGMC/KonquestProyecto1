@@ -181,6 +181,8 @@ public class Planeta {
         }
         return planeta;
     }
+    
+    
 
     public int BuscarIndicePlaneta(ArrayList<Planeta> planetas, String nombre) {
         Planeta planeta = null;

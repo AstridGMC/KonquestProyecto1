@@ -5,12 +5,14 @@
         <group>
             <file>file:/home/astridmc/NetBeansProjects/KonquestProyecto1/src/Backend/Clases/Planeta.java</file>
             <file>file:/home/astridmc/NetBeansProjects/KonquestProyecto1/src/Frontend/Propiedades.java</file>
-            <file>file:/home/astridmc/NetBeansProjects/KonquestProyecto1/src/konquest/Konquest.java</file>
-            <file>file:/home/astridmc/NetBeansProjects/KonquestProyecto1/src/Backend/Clases/Mapa.java</file>
+            <file>file:/home/astridmc/NetBeansProjects/KonquestProyecto1/src/Backend/Clases/ManejadorAtaque.java</file>
+            <file>file:/home/astridmc/NetBeansProjects/KonquestProyecto1/src/Backend/Clases/Accion.java</file>
+            <file>file:/home/astridmc/NetBeansProjects/KonquestProyecto1/src/Backend/Clases/PlanetaNeutral.java</file>
             <file>file:/home/astridmc/NetBeansProjects/KonquestProyecto1/src/Frontend/Principal.java</file>
-            <file>file:/home/astridmc/NetBeansProjects/KonquestProyecto1/src/Backend/Clases/Jugador.java</file>
-            <file>file:/home/astridmc/NetBeansProjects/KonquestProyecto1/src/Backend/Clases/EscritorJson.java</file>
+            <file>file:/home/astridmc/NetBeansProjects/KonquestProyecto1/src/Frontend/PanelJuego.java</file>
             <file>file:/home/astridmc/NetBeansProjects/KonquestProyecto1/src/Backend/Clases/Tablero.java</file>
+            <file>file:/home/astridmc/NetBeansProjects/KonquestProyecto1/src/Frontend/VerFlotas.java</file>
+            <file>file:/home/astridmc/NetBeansProjects/KonquestProyecto1/src/Backend/Clases/Jugador.java</file>
         </group>
     </open-files>
 </project-private>

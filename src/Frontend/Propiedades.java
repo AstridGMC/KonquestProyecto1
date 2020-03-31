@@ -34,7 +34,7 @@ import org.json.JSONObject;
  * @author astridmc
  */
 public class Propiedades extends javax.swing.JDialog {
-
+    boolean creado= false;
     String path1;
     DefaultTableModel modelo;
     ComboBoxModel<String> modeloCombo;
@@ -89,6 +89,7 @@ public class Propiedades extends javax.swing.JDialog {
         mapa = Parser.mapa;
         System.out.println(jugadores.size() + " planetas " + planetas.size() + " neutrales " + planetasNeutrales1.size());
         llenarDatos(mapa);
+        generarTablero();
         //llenarDatos(Parser.mapa);
     }
 
@@ -136,6 +137,16 @@ public class Propiedades extends javax.swing.JDialog {
     public void setMapa(Mapa mapa) {
         this.mapa = mapa;
     }
+
+    public boolean isCreado() {
+        return creado;
+    }
+
+    public void setCreado(boolean creado) {
+        this.creado = creado;
+    }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -249,15 +260,14 @@ public class Propiedades extends javax.swing.JDialog {
         PanelJugadores.setLayout(PanelJugadoresLayout);
         PanelJugadoresLayout.setHorizontalGroup(
             PanelJugadoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-            .addGroup(PanelJugadoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(PanelJugadoresLayout.createSequentialGroup()
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE))
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelJugadoresLayout.createSequentialGroup()
-                    .addComponent(btnAgregarJugador, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(Eliminar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addContainerGap()))
+            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, PanelJugadoresLayout.createSequentialGroup()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(PanelJugadoresLayout.createSequentialGroup()
+                .addComponent(btnAgregarJugador, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(Eliminar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
             .addGroup(PanelJugadoresLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(comboTipoJugador, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -751,6 +761,7 @@ public class Propiedades extends javax.swing.JDialog {
     }//GEN-LAST:event_EliminarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        Principal.creado = false;
         this.setVisible(false);
     }//GEN-LAST:event_btnCancelarActionPerformed
 
@@ -758,23 +769,29 @@ public class Propiedades extends javax.swing.JDialog {
         panelMapaCreado.setVisible(false);
         enableComponents(jPanel1, false);
         if (planeta2 != null) {
+            
             guardarDatosPlaneta(planeta2);
             generarTablero();
+            panelMapaCreado.setVisible(true);
         }
 
     }//GEN-LAST:event_PanelMapaMouseClicked
 
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
-
+        System.out.println("crea Jason.........");
         JSONObject mapaJson = creadorJson.crearObjetoMapa(recopilarDatosPropiedades());
         JSONObject[] planetasJson = creadorJson.crearPlanetas(planetas);
         JSONObject[] jugadoresJson = creadorJson.crearJugadores(jugadores);
         JSONObject[] planetasNeutralesJson = creadorJson.crearPlanetasNeutrales(planetasNeutrales1);
         JSONObject objetoJuego = creadorJson.generarObjetoJuego(mapaJson, planetasJson, planetasNeutralesJson, jugadoresJson);
         if (archivo = true) {
-            creadorJson.modificador(path1, objetoJuego.toString());
+            if(path1!=null)
+            creadorJson.modificador(path1, objetoJuego.toString()); 
+            creado = true;
             this.setVisible(false);
-        } else {
+        } 
+        if(path1==null) {
+            System.out.println(" ingresandooooooooooo");
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             int result = fileChooser.showOpenDialog(this);
@@ -787,9 +804,17 @@ public class Propiedades extends javax.swing.JDialog {
                     JOptionPane.showMessageDialog(null, "No se ha elegido Direccion");
                     //  txt.setText("...");
                 } else {
+                    PlanetaNeutral neutral = new PlanetaNeutral();
+                    System.out.println(mapa.getTamaño()[0]+""+ mapa.getTamaño()[1]+""+  mapa.getPlanetasNeutrales().getProduccion());
+                    planetasNeutrales1 = neutral.VerificarPlanetasNeutrales(planetasNeutrales1, mapa.getTamaño()[0], mapa.getTamaño()[1], mapa.getPlanetasNeutrales().getProduccion());
+                    planetas = plan.VerificarPlanetas(planetas, mapa.getTamaño()[0], mapa.getTamaño()[1], mapa.getPlanetasNeutrales().getProduccion());
                     String path = fileName.getAbsolutePath();
                     System.out.print(objetoJuego);
+                    System.out.println(idMapaTxt.getText());
                     creadorJson.creador(path, idMapaTxt.getText(), objetoJuego.toString());
+                    System.out.println("creado..........");
+                    creado = true;
+                    this.setVisible(false);
                 }
             }
         }
@@ -940,13 +965,14 @@ public class Propiedades extends javax.swing.JDialog {
     }
 
     public void generarTablero() {
-
+        System.out.println(planetas.size()+"...........................................2222222222");
         System.out.println("removiendo");
         panelMapaCreado.removeAll();
         Tablero tablero1 = new Tablero();
         panelMapaCreado.setLayout(new GridLayout(1, 1));
         tablero1.setFila((Integer) Altura.getValue());
         tablero1.setColumna((Integer) Anchura.getValue());
+        tablero1.setTipoJuego(false);
         panelMapaCreado.add(tablero1.llenarTablero(planetas, planetasNeutrales1, 180, 162));
         panelMapaCreado.setPreferredSize(new Dimension(180, 162));
         panelMapaCreado.setVisible(true);

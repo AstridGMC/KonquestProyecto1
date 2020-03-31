@@ -85,22 +85,23 @@ public class Tablero {
                 planeta = buscarLugarPlaneta(planetas, planetasNeutrales, i, j);
 
                 if (planeta != null) {
+                    
                     System.out.println(planeta.isNeutral());
                     casilla = new JLabel();
                     casilla.setBorder(border);
                     k = k + 1;
                     System.out.println(k);
                     if (!planeta.isNeutral()) {
+                        System.out.println("...........imprimoPlaneta "+planeta.getNombre());
                         ImageIcon planetaImg = new ImageIcon(planeta.getImagenPath());
                         casilla.setIcon(new ImageIcon(planetaImg.getImage().getScaledInstance(imagenAncho, imagenAlto, Image.SCALE_SMOOTH)));
                         casilla.setBackground(planeta.getColorFondo());
                         casilla.setOpaque(true);
-                        System.out.println("pppppppppppp");
                     } else {
                         casilla.setOpaque(false);
                         ImageIcon planetaNeutralImg = new ImageIcon("planetas/neutral.png");
                         casilla.setIcon(new ImageIcon(planetaNeutralImg.getImage().getScaledInstance(imagenAncho, imagenAlto, Image.SCALE_SMOOTH)));
-                        System.out.println("pppppppppppp");
+                        
                     }
                     tablero.add(casilla);
                     listenerCasilla(casilla, i, j);
@@ -163,8 +164,8 @@ public class Tablero {
                 obtenerCasilla(i, j);
                 Planeta planeta = buscarLugarPlaneta(planetas, planetasNeutros, fila, columna);
                 if (tipoJuego == true) {
-                    System.out.println("ingresando Tipo Juego  " + planetasEscogidos.size()+ jugador.getPlanetasConquistados().size());
-                    if(planetasEscogidos.size() ==2){
+                    System.out.println("ingresando Tipo Juego  " + planetasEscogidos.size() + ""+jugador.getPlanetasConquistados().size());
+                    if (planetasEscogidos.size() == 2) {
                         planetasEscogidos.clear();
                     }
                     if (planetasEscogidos.size() <= 2) {
@@ -179,12 +180,12 @@ public class Tablero {
                                 planetasEscogidos.add(planeta);
                                 System.out.println(" agregando Planeta 2" + planeta.getNombre());
                                 PanelJuego.planetasEscogidos = planetasEscogidos;
-                               // planetasEscogidos.clear();
+                                // planetasEscogidos.clear();
                             }
 
                         }
 
-                    } else {
+                    } /*else {
                         planetasEscogidos.clear();
                         PanelJuego.planetasEscogidos.clear();
                         if (planetasEscogidos.size() <= 2) {
@@ -193,13 +194,11 @@ public class Tablero {
                                 PanelJuego.planetasEscogidos = planetasEscogidos;
                             }
                         }
-                    }
+                    }*/
 
                 } else {
-
-                    // pieza.setVisible(true);
-                    Propiedades.enableComponents(Propiedades.jPanel1, true);
-                    Propiedades.llenarDatosPlaneta(planeta);
+                        Propiedades.enableComponents(Propiedades.jPanel1, true);
+                        Propiedades.llenarDatosPlaneta(planeta);
                 }
 
             }
@@ -217,8 +216,8 @@ public class Tablero {
             @Override
             public void mouseEntered(MouseEvent e) {
                 obtenerCasilla(i, j);
-                Planeta planeta = buscarLugarPlaneta(planetas, planetasNeutros, fila, columna);
-                if (tipoJuego = true) {
+                if (tipoJuego) {
+                    Planeta planeta = buscarLugarPlaneta(planetas, planetasNeutros, fila, columna);
                     if (planeta != null) {
                         if (!planeta.isNeutral()) {
                             casilla.setToolTipText(""
@@ -264,13 +263,13 @@ public class Tablero {
     public Planeta buscarLugarPlaneta(ArrayList<Planeta> planetas, ArrayList<PlanetaNeutral> planetaNeutral, int fila, int columna) {
         for (int i = 0; i < planetas.size(); i++) {
             if (planetas.get(i).getPosicion()[0] == fila && planetas.get(i).getPosicion()[1] == columna) {
-                //System.out.println("planeta" + planetas.get(i).getNombre());
+                System.out.println("planeta" + planetas.get(i).getNombre());
                 return planetas.get(i);
             }
         }
         for (int i = 0; i < planetaNeutral.size(); i++) {
             if (planetaNeutral.get(i).getPosicion()[0] == fila && planetaNeutral.get(i).getPosicion()[1] == columna) {
-                //System.out.println("No Neutral" + planetaNeutral.get(i).getNombre());
+                System.out.println("No Neutral" + planetaNeutral.get(i).getNombre());
                 return planetaNeutral.get(i);
             }
         }

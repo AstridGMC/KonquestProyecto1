@@ -107,7 +107,7 @@ public class EscritorJson {
     }
 
     public boolean creador(String direccion, String nombre, String texto) {
-        System.out.println("creando txt  ...........");
+        System.out.println("creando txt  ..........."+  direccion + nombre);
         try {
             String ruta = direccion + "/" + nombre + ".json";
             String contenido = texto;

@@ -12,6 +12,7 @@ import Backend.Clases.Mapa;
 import Backend.Clases.Planeta;
 import Backend.Clases.PlanetaNeutral;
 import Backend.Clases.Tablero;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridLayout;
@@ -19,9 +20,15 @@ import java.awt.Image;
 import java.net.URL;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.showMessageDialog;
+import javax.swing.JTextPane;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
 
 /**
  *
@@ -30,7 +37,6 @@ import javax.swing.SpinnerNumberModel;
 public class PanelJuego extends javax.swing.JPanel {
 
     ArrayList<Planeta> planetas = new ArrayList();
-    ;
     ArrayList<Jugador> jugadores = new ArrayList();
     ArrayList<PlanetaNeutral> planetasNeutrales = new ArrayList();
     public static ArrayList<Planeta> planetasEscogidos = new ArrayList();
@@ -38,12 +44,14 @@ public class PanelJuego extends javax.swing.JPanel {
     ArrayList<ArrayList> accionesJugadores = new ArrayList();
     ManejadorAtaque atacar = new ManejadorAtaque();
     ArrayList<Accion> acciones = new ArrayList();
+    PlanetaNeutral planetaNeutro = new PlanetaNeutral();
+    Planeta planeta = new Planeta();
     Accion accion;
     Mapa mapa = new Mapa();
     String fondo = "fondoSol.jpg";
     Propiedades propiedades;
     Tablero tablero = new Tablero(true);
-    int turno = 1;
+    int turno = 0;
     int numJugador = 0;
 
     /**
@@ -99,8 +107,6 @@ public class PanelJuego extends javax.swing.JPanel {
         btnFinTurno = new javax.swing.JButton();
         panelTablero = new javax.swing.JPanel();
         panelTablero1 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        consola1 = new javax.swing.JTextArea();
         panelOPcionesJuego1 = new javax.swing.JPanel();
         PanelBotones1 = new javax.swing.JPanel();
         btnMedirDistancia1 = new javax.swing.JButton();
@@ -114,6 +120,8 @@ public class PanelJuego extends javax.swing.JPanel {
         panelEnviarNaves = new javax.swing.JPanel();
         numNaves = new javax.swing.JSpinner();
         btnEnviarNaves = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        consola1 = new javax.swing.JTextPane();
 
         panelJuego.setOpaque(false);
 
@@ -252,6 +260,9 @@ public class PanelJuego extends javax.swing.JPanel {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 panelTablero1MouseClicked(evt);
             }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                panelTablero1MouseEntered(evt);
+            }
         });
 
         javax.swing.GroupLayout panelTablero1Layout = new javax.swing.GroupLayout(panelTablero1);
@@ -264,13 +275,6 @@ public class PanelJuego extends javax.swing.JPanel {
             panelTablero1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 420, Short.MAX_VALUE)
         );
-
-        consola1.setBackground(new java.awt.Color(1, 1, 1));
-        consola1.setColumns(20);
-        consola1.setFont(new java.awt.Font("URW Bookman L", 0, 18)); // NOI18N
-        consola1.setForeground(new java.awt.Color(254, 254, 254));
-        consola1.setRows(5);
-        jScrollPane2.setViewportView(consola1);
 
         panelOPcionesJuego1.setBackground(new java.awt.Color(1, 57, 58));
 
@@ -286,6 +290,11 @@ public class PanelJuego extends javax.swing.JPanel {
 
         btnVistaGeneral1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Frontend/Imagenes/naves.png"))); // NOI18N
         btnVistaGeneral1.setText("Vista General de La Flota");
+        btnVistaGeneral1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVistaGeneral1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout PanelBotones1Layout = new javax.swing.GroupLayout(PanelBotones1);
         PanelBotones1.setLayout(PanelBotones1Layout);
@@ -355,6 +364,12 @@ public class PanelJuego extends javax.swing.JPanel {
 
         panelEnviarNaves.setOpaque(false);
 
+        numNaves.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                numNavesKeyPressed(evt);
+            }
+        });
+
         btnEnviarNaves.setText("Enviar");
         btnEnviarNaves.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -417,17 +432,20 @@ public class PanelJuego extends javax.swing.JPanel {
                     .addContainerGap()))
         );
 
+        consola1.setBackground(new java.awt.Color(1, 1, 1));
+        jScrollPane3.setViewportView(consola1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2)
             .addComponent(panelOPcionesJuego1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addGap(218, 218, 218)
                 .addComponent(panelTablero1, javax.swing.GroupLayout.DEFAULT_SIZE, 520, Short.MAX_VALUE)
                 .addGap(240, 240, 240))
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -438,7 +456,7 @@ public class PanelJuego extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panelTablero1, javax.swing.GroupLayout.PREFERRED_SIZE, 420, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -465,16 +483,13 @@ public class PanelJuego extends javax.swing.JPanel {
     private void panelTablero1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelTablero1MouseClicked
         //System.out.println(planetasEscogidos.size() + "........................tam planetasEscogidos");
         if (planetasEscogidos.size() == 2) {
-            System.out.println("creando valores");
             accionJugador.setText(jugadorEnTurno.getNombre() + "  ¿Cuantas naves desea enviar?");
             panelEnviarNaves.setVisible(true);
-        }  
+        }
     }//GEN-LAST:event_panelTablero1MouseClicked
 
     private void formKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyTyped
-        if (evt.getKeyCode() == evt.VK_ENTER) {
-            showMessageDialog(this, "Has pulsado Enter");
-        }
+
         if (evt.getKeyCode() == evt.VK_ESCAPE) {
             showMessageDialog(this, "Has pulsado Enter");
         }
@@ -482,30 +497,15 @@ public class PanelJuego extends javax.swing.JPanel {
 
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
 
-        if (evt.getKeyCode() == evt.VK_ENTER) {
-            showMessageDialog(this, "Has pulsado Enter");
-        }
-        if (evt.getKeyCode() == evt.VK_ESCAPE) {
-            showMessageDialog(this, "Has pulsado Enter");
-        }
 
     }//GEN-LAST:event_formKeyPressed
 
     private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
-
+        generarTablero();
     }//GEN-LAST:event_formMouseClicked
 
     private void formMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseEntered
-        
-        if (planetasEscogidos.size() == 2) {
-            System.out.println("creando valores");
-            accionJugador.setText(jugadorEnTurno.getNombre() + "     ¿Cuantas naves desea enviar?");
-            SpinnerModel sm = new SpinnerNumberModel(1, 1, planetasEscogidos.get(0).getNaves(), 1);
-            numNaves.setModel(sm);
-            panelEnviarNaves.setVisible(true);
-            planetasEscogidos.clear();
-        } 
-        
+
     }//GEN-LAST:event_formMouseEntered
 
     private void btnTerminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTerminarActionPerformed
@@ -517,6 +517,7 @@ public class PanelJuego extends javax.swing.JPanel {
             accionJugador.setForeground(jugadorEnTurno.getColorJugador());
             accionJugador.setText(jugadorEnTurno.getNombre() + "   escoja un Planeta");
             turno = turno + 1;
+            finTurno();
             panelEnviarNaves.setVisible(false);
         } else {
             System.out.println("aumentando Turno" + numJugador);
@@ -539,6 +540,7 @@ public class PanelJuego extends javax.swing.JPanel {
             accionJugador.setForeground(jugadorEnTurno.getColorJugador());
             accionJugador.setText(jugadorEnTurno.getNombre() + "   escoja un Planeta");
             turno = turno + 1;
+            finTurno();
             panelEnviarNaves.setVisible(false);
         } else {
             System.out.println("aumentando Turno" + numJugador);
@@ -547,31 +549,61 @@ public class PanelJuego extends javax.swing.JPanel {
             tablero.setJugador(jugadorEnTurno);
             accionJugador.setForeground(jugadorEnTurno.getColorJugador());
             accionJugador.setText(jugadorEnTurno.getNombre() + "   escoja un Planeta");
+
             panelEnviarNaves.setVisible(false);
         }
     }//GEN-LAST:event_btnFinTurno1ActionPerformed
-int numeroFlota = 0;
+    int numeroFlota = 0;
     private void btnEnviarNavesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnviarNavesActionPerformed
-        numeroFlota= numeroFlota+1;
-        System.out.println("enviando "+ numNaves.getValue());
+        numeroFlota = numeroFlota + 1;
+        System.out.println(planetasEscogidos.size());
+        System.out.println("enviando " + numNaves.getValue());
         accion = new Accion();
         accion.setJugador(jugadorEnTurno);
         accion.setNavesEnviadas(Integer.parseInt(numNaves.getValue().toString()));
-        if(accionesJugadores.get(numJugador).isEmpty()){
+        if (accionesJugadores.get(numJugador).isEmpty()) {
             accion.setNumeroFlota(1);
-        }else{
-            int tam=  accionesJugadores.get(numJugador).size()-1;
+        } else {
+            int tam = accionesJugadores.get(numJugador).size() - 1;
             ArrayList<Accion> action = accionesJugadores.get(numJugador);
-            accion.setNumeroFlota(action.get(tam).getNumeroFlota()+1);
+            accion.setNumeroFlota(action.get(tam).getNumeroFlota() + 1);
         }
-        accion.setPlanetasUsados(atacar.crearAPlanetas(planetasEscogidos.get(0), planetasEscogidos.get(1)));
-        accion.setRealizado(false);
-        accion.setTurnoAllegar(atacar.determinarTurno(planetasEscogidos.get(0).getPosicion()[0], planetasEscogidos.get(0).getPosicion()[1], planetasEscogidos.get(1).getPosicion()[0], planetasEscogidos.get(1).getPosicion()[1]));
-        accionesJugadores.get(numJugador).add(accion);
-        System.out.println(accionesJugadores.get(numJugador).size());
-        acciones.add(accion);
-        System.out.println(acciones.size());
+        try {
+            accion.setPlanetasUsados(atacar.crearAPlanetas(planetasEscogidos.get(0), planetasEscogidos.get(1)));
+            accion.setRealizado(false);
+            accion.setTurnoAllegar(atacar.determinarTurno(planetasEscogidos.get(0).getPosicion()[0], planetasEscogidos.get(0).getPosicion()[1],
+                    planetasEscogidos.get(1).getPosicion()[0], planetasEscogidos.get(1).getPosicion()[1]) + turno);
+            accionesJugadores.get(numJugador).add(accion);
+            System.out.println(accionesJugadores.get(numJugador).size());
+            acciones.add(accion);
+            System.out.println(acciones.size());
+
+            planetasEscogidos.clear();
+        } catch (Exception e) {
+        }
+
     }//GEN-LAST:event_btnEnviarNavesActionPerformed
+
+    private void numNavesKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_numNavesKeyPressed
+        if (evt.getKeyCode() == evt.VK_ENTER) {
+            showMessageDialog(this, "Has pulsado Enter");
+        }
+    }//GEN-LAST:event_numNavesKeyPressed
+
+    private void panelTablero1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelTablero1MouseEntered
+        if (planetasEscogidos.size() == 2) {
+            accionJugador.setText(jugadorEnTurno.getNombre() + "     ¿Cuantas naves desea enviar?");
+            SpinnerModel sm = new SpinnerNumberModel(1, 1, planetasEscogidos.get(0).getNaves(), 1);
+            numNaves.setModel(sm);
+            panelEnviarNaves.setVisible(true);
+        }
+
+    }//GEN-LAST:event_panelTablero1MouseEntered
+
+    private void btnVistaGeneral1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVistaGeneral1ActionPerformed
+        VerFlotas flotas = new VerFlotas(null,true,jugadorEnTurno, jugadorEnTurno.getAccionesJugador());
+        flotas.setVisible(true);
+    }//GEN-LAST:event_btnVistaGeneral1ActionPerformed
 
     public void generarTablero() {
         panelTablero1.setVisible(false);
@@ -583,13 +615,52 @@ int numeroFlota = 0;
         panelTablero1.add(tablero.llenarTablero(planetas, planetasNeutrales, 448, 448));
         panelTablero1.setPreferredSize(new Dimension(448, 448));
         panelTablero1.setVisible(true);
+        panelTablero1.repaint();
     }
 
-    void obtenerYEscribirConsola(String texto) {
-        consola.setText(consola.getText() + "\n" + texto);
+    void obtenerYEscribirConsola(String texto, Color color) {
+        //consola.setText(consola.getText() + "\n" + texto);
+        appendToPane(consola1, texto + "\n", color);
     }
 
-    void crearArreglosAcciones(){
+    void finTurno() {
+        Boolean isFall;
+        Accion ataque = atacar.verificarTurno(acciones, turno);
+        if (ataque != null) {
+            Jugador jugador = ataque.getJugador();
+            Planeta origen;
+            Planeta destino;
+            if (ataque != null) {
+                System.out.println("atacandoo....");
+                if (ataque.getPlanetasUsados()[1].isNeutral()) {
+                    isFall = atacar.atacar(ataque.getNavesEnviadas(), ataque.getPlanetasUsados()[0], ataque.getPlanetasUsados()[1]);
+                    origen = ataque.getPlanetasUsados()[0];
+                    destino = ataque.getPlanetasUsados()[1];
+                    jugadores.get(jugador.BuscarIndiceJugador(jugadores, jugador.getNombre())).getPlanetasConquistados().set(planeta.BuscarIndicePlaneta(planetas, origen.getNombre()), ataque.getPlanetasUsados()[0]);
+                    planetas.set(planeta.BuscarIndicePlaneta(planetas, origen.getNombre()), ataque.getPlanetasUsados()[0]);
+                    planetas.set(planeta.BuscarIndicePlaneta(planetas, destino.getNombre()), ataque.getPlanetasUsados()[1]);
+                    if (isFall) {
+                        destino.setColorFondo(jugador.getColorJugador());
+                        planetasNeutrales.remove(planetaNeutro.BuscarIndicePlanetaNeutral(planetasNeutrales, destino.getNombre()));
+                        planetas.add(destino);
+                        jugador.getPlanetasConquistados().add(destino);
+                        JOptionPane.showMessageDialog(null, "El planeta " + destino.getNombre() + " ha caido ante el jugador " + jugador.getNombre());
+                        obtenerYEscribirConsola("El planeta " + destino.getNombre() + " ha caido ante el jugador " + jugador.getNombre(), jugador.getColorJugador());
+                    } else {
+                        JOptionPane.showMessageDialog(null, "El planeta " + destino.getNombre() + " se ha defendido de ataque del " + jugador.getNombre());
+                        obtenerYEscribirConsola("El planeta " + destino.getNombre() + " ha caido ante el jugador " + jugador.getNombre(), jugador.getColorJugador());
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "El Turno" + turno + " Ha Finalizado");
+                }
+            } else {
+                System.out.println("nada en el turno " + turno);
+            }
+        }
+
+    }
+
+    void crearArreglosAcciones() {
         ArrayList<Accion> misAcciones;
         for (int i = 0; i < jugadores.size(); i++) {
             System.out.println("agregando Acciones");
@@ -598,6 +669,18 @@ int numeroFlota = 0;
         }
     }
 
+    private void appendToPane(JTextPane tp, String msg, Color c) {
+        StyleContext sc = StyleContext.getDefaultStyleContext();
+        AttributeSet aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, c);
+
+        aset = sc.addAttribute(aset, StyleConstants.FontFamily, "Lucida Console");
+        aset = sc.addAttribute(aset, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
+
+        int len = tp.getDocument().getLength();
+        tp.setCaretPosition(len);
+        tp.setCharacterAttributes(aset, false);
+        tp.replaceSelection(msg);
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel PanelBotones;
     private javax.swing.JPanel PanelBotones1;
@@ -614,11 +697,11 @@ int numeroFlota = 0;
     private javax.swing.JButton btnVistaGeneral;
     private javax.swing.JButton btnVistaGeneral1;
     private javax.swing.JTextArea consola;
-    private javax.swing.JTextArea consola1;
+    private javax.swing.JTextPane consola1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSpinner numNaves;
     private javax.swing.JPanel panelEnviarNaves;
     private javax.swing.JPanel panelJuego;

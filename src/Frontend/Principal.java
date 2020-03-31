@@ -28,7 +28,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  */
 public class Principal extends javax.swing.JFrame {
 
-    boolean inicioJuego = false;
+    public static boolean creado;
+    boolean inicioJuego;
     ArrayList<Planeta> planetas;
     ArrayList<Jugador> jugadores = new ArrayList();
     ArrayList<PlanetaNeutral> planetasNeutrales = new ArrayList();
@@ -173,7 +174,7 @@ public class Principal extends javax.swing.JFrame {
             panelJuego.setVisible(true);
             panelJuego.setBounds(0, 0, imagenPanel.getWidth(), imagenPanel.getHeight());
         }
-        if (imagenPanel.getComponents().length>0) {
+        if (imagenPanel.getComponents().length > 0) {
             imagen.setBounds(0, 0, imagenPanel.getWidth(), imagenPanel.getHeight());
             imagen.setIcon(new ImageIcon(portada.getImage().getScaledInstance(imagenPanel.getWidth(), imagenPanel.getHeight(), Image.SCALE_SMOOTH)));
             imagenPanel.remove(0);
@@ -190,6 +191,8 @@ public class Principal extends javax.swing.JFrame {
             planetas = propiedades.getPlanetas();
             planetasNeutrales = propiedades.getPlanetasNeutrales1();
             jugadores = propiedades.getJugadores();
+            System.out.println(planetas.size());
+            System.out.println(planetasNeutrales.size());
             inicioJuego();
         } catch (Exception e) {
             System.out.println(e);
@@ -212,14 +215,16 @@ public class Principal extends javax.swing.JFrame {
                 propiedades = new Propiedades(fileName.getName(), this);
                 propiedades.setVisible(true);
                 try {
-                    mapa = propiedades.getMapa();
+                    if (propiedades.isCreado()) {
+                        mapa = propiedades.getMapa();
+                        planetas = propiedades.getPlanetas();
+                        planetasNeutrales = propiedades.getPlanetasNeutrales1();
+                        jugadores = propiedades.getJugadores();
+                        System.out.println(planetas.size());
+                        System.out.println(planetasNeutrales.size());
+                        inicioJuego();
+                    }
 
-                    planetas = propiedades.getPlanetas();
-                    System.out.println(mapa.getTamaño()[0] + mapa.getTamaño()[1]);
-                    planetasNeutrales = propiedades.getPlanetasNeutrales1();
-                    jugadores = propiedades.getJugadores();
-                    System.out.println(planetasNeutrales.size()+""+ jugadores.size());
-                    inicioJuego();
                 } catch (Exception e) {
                     System.out.println(e);
                     JOptionPane.showMessageDialog(null, "Error iniciando el Juego");
@@ -251,15 +256,16 @@ public class Principal extends javax.swing.JFrame {
     public void inicioJuego() {
         inicioJuego = true;
         panelJuego = new PanelJuego(planetas, jugadores, planetasNeutrales, mapa);
+        System.out.println("iniciando ");
         imagenPanel.add(panelJuego);
-           System.out.println(inicioJuego);
+        System.out.println(inicioJuego);
         if (inicioJuego = true && panelJuego != null) {
             panelJuego.setVisible(false);
             imagenPanel.add(panelJuego);
             panelJuego.setVisible(true);
             panelJuego.setBounds(0, 0, imagenPanel.getWidth(), imagenPanel.getHeight());
         }
-        if (imagenPanel.getComponents().length>0) {
+        if (imagenPanel.getComponents().length > 0) {
             imagen.setBounds(0, 0, imagenPanel.getWidth(), imagenPanel.getHeight());
             imagen.setIcon(new ImageIcon(portada.getImage().getScaledInstance(imagenPanel.getWidth(), imagenPanel.getHeight(), Image.SCALE_SMOOTH)));
             imagenPanel.remove(0);

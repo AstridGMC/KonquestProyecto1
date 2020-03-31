@@ -6,6 +6,7 @@
 package Frontend;
 
 import Backend.Clases.Accion;
+import Backend.Clases.Jugador;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 
@@ -23,11 +24,11 @@ public class VerFlotas extends javax.swing.JDialog {
      * @param creador
      * @param jugadorAcciones
      */
-    public VerFlotas(java.awt.Frame parent, boolean modal, Accion creador, ArrayList<Accion> jugadorAcciones) {
+    public VerFlotas(java.awt.Frame parent, boolean modal, Jugador jugador, ArrayList<Accion> jugadorAcciones) {
         super(parent, modal);
         initComponents();
         this.setResizable(false);
-        nombreJugador.setText(creador.getJugador().getNombre());
+        nombreJugador.setText(jugador.getNombre());
         this.jugadorAcciones = jugadorAcciones;
         llenarTablas();
     }
