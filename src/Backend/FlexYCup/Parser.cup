@@ -1,0 +1,163 @@
+package Backend.FlexYCup;
+import java.util.LinkedList;
+import java_cup.runtime.*;
+import Backend.Clases.ErrorS;
+import java.util.ArrayList;
+import Backend.Clases.Planeta;
+import Backend.Clases.Jugador;
+import Backend.Clases.Mapa;
+import Backend.Clases.PlanetaNeutral;
+
+parser code 
+
+{:
+    public static ArrayList<Planeta> planetas = new ArrayList();
+    public static ArrayList<Jugador> jugadores= new ArrayList();
+    public static ArrayList<PlanetaNeutral> planetasNeutrales = new ArrayList();
+    public static Mapa mapa = new Mapa();
+    LinkedList tablaErroresSintacticos =  new LinkedList();
+    public void syntax_error(Symbol s){
+        String lexema = s.value.toString();
+        int fila =  s.right;
+        int columna = s.left;
+        String red="\033[31m"; 
+        System.out.println(red + "ERROR SINTACTICO RECUPERADO!! \t\tLexema: " + lexema+ "\t\tFila " + fila +"\t\tColumna: " +columna+"simbolo"  );
+        ErrorS error = new ErrorS(lexema, fila, columna , "error Sintactico");
+        tablaErroresSintacticos.add(error);
+    }
+
+    public void unrrecovered_syntax_error(Symbol s) throws java.lang.Exception {
+        String lexema = s.value.toString();
+        int fila = s.right;
+        int columna = s.left;
+        String red="\033[31m"; 
+        System.out.println(red + "ERROR SINTACTICO SIN RECUPERACION!! \t\tLexema: " + lexema+ "\t\tFila " + fila +"\t\tColumna: " +columna );
+        ErrorS error = new ErrorS(lexema, fila, columna , "error Sintactico");
+        tablaErroresSintacticos.add(error);
+    }
+:}
+
+//---------->
+action code {:
+
+    String nombre;
+    int naves;
+    int produccion;
+    float porcentajeMuertes;
+    boolean neutral;
+    boolean miboolean;
+    int numeroNaves;
+    int punteo;
+    ArrayList<Planeta> planetasConquistados  = new ArrayList();
+    int[ ] tamMapa = new int[2];
+    String tipo;
+    Planeta planeta  = new Planeta();
+    PlanetaNeutral planetaNeutral  = new PlanetaNeutral();
+    String padre;
+   
+    String padreCarpeta;
+:}
+
+terminal    MAPA, PLANETASNEUTRALES, PLANETAS, ID, NOMBREid, NAVESid,PORMUERTESid,ALAZARid, IDid, TAMAÑOid, FILASid, Comilla, FACIL, DIFICIL, HUMANO,
+            COLUMNASid, PLANETASNEUTRALESid, MAPACIEGOid, ACUMULARid, NEUTRALES, MOSTRARNAVESid, MOSTRARESTADISTICASid,PLANETASid,TIPOJUGADORid,
+            PRODUCCIONid, FINALIZACIONid, CORCHETECIERRA, CORCHETEABRE, ABRECORCHETE, CIERRACORCHETE, DOSPUNTOS, COMILLA, COMA, IDPLANETA, NUMMUERTES,TRUE,FALSE, IDMAPA, ENTERO, JUGADORES;
+
+non terminal    S, cuerpoJugadoresJason, cuerpoTamañoId, cuerpoJason,mapaJason, cuerpoNeutrales, planetasNeutralesJason,tipoJugador,cuerpoPlanetasNeutralesJason,
+                cuerpoPlanetasJason, planetasJason, booleano,jugadoresJason, cuerpoPlanetasJugador, nombrePlaneta, nombreJugador, nombreMapa;
+
+start with S;
+
+S ::= ABRECORCHETE cuerpoJason ;
+
+
+cuerpoJason ::=           MAPA DOSPUNTOS ABRECORCHETE mapaJason  cuerpoJason
+			| PLANETASNEUTRALES DOSPUNTOS  CORCHETEABRE planetasNeutralesJason CORCHETECIERRA cuerpoJason
+			| PLANETAS DOSPUNTOS  CORCHETEABRE planetasJason CORCHETECIERRA cuerpoJason {:System.out.println( "222OOOOOOOOOO" );:}
+			| JUGADORES DOSPUNTOS CORCHETEABRE jugadoresJason CORCHETECIERRA cuerpoJason
+			| COMA cuerpoJason
+                        | CIERRACORCHETE;
+
+mapaJason::=  		IDid  DOSPUNTOS COMILLA ID:idMapa                           {:Parser.mapa.setIdMapa(idMapa.toString());:} COMILLA mapaJason
+			|TAMAÑOid DOSPUNTOS  ABRECORCHETE  cuerpoTamañoId           {:Parser.mapa.setTamaño(tamMapa);:}  mapaJason
+			|ALAZARid DOSPUNTOS booleano                                {:System.out.println( miboolean);Parser.mapa.setAlAzar(miboolean);:}  mapaJason
+			|PLANETASNEUTRALESid DOSPUNTOS ENTERO:numPlanetasNeutros    {:Parser.mapa.setNumeroPlanetasNeutrales(Integer.parseInt(numPlanetasNeutros.toString()));:} mapaJason
+			|MAPACIEGOid DOSPUNTOS  booleano                            {:Parser.mapa.setMapaCiego(miboolean);:} mapaJason
+			|ACUMULARid DOSPUNTOS booleano: isAcumular                  {:Parser.mapa.setAcumular(miboolean);:} mapaJason 
+			|NEUTRALES DOSPUNTOS ABRECORCHETE cuerpoNeutrales           {:Parser.mapa.setPlanetasNeutrales(planetaNeutral);:}   mapaJason
+			|FINALIZACIONid DOSPUNTOS ENTERO: numFinalizacion           {:Parser.mapa.setFinalizacion(Integer.parseInt(numFinalizacion.toString()));:} mapaJason
+			|COMA mapaJason 
+                        |CIERRACORCHETE;
+
+cuerpoTamañoId::=        FILASid DOSPUNTOS ENTERO:filas {:tamMapa[0]= Integer.parseInt(filas.toString());:} cuerpoTamañoId
+                        |COLUMNASid DOSPUNTOS ENTERO:columnas {:tamMapa[1]=  Integer.parseInt(columnas.toString());:} cuerpoTamañoId
+                        |COMA cuerpoTamañoId
+                        |CIERRACORCHETE;
+
+cuerpoNeutrales::=	 MOSTRARNAVESid  DOSPUNTOS booleano                                 {:System.out.println( miboolean); planetaNeutral.setMostrarNaves(miboolean);:} cuerpoNeutrales
+			|MOSTRARESTADISTICASid DOSPUNTOS booleano                           {:planetaNeutral.setMostrarEstadisticas(miboolean);:} cuerpoNeutrales
+			|PRODUCCIONid DOSPUNTOS ENTERO: numProduccion                       {:planetaNeutral.setProduccion(Integer.parseInt(numProduccion.toString()));:} cuerpoNeutrales
+                        |COMA cuerpoNeutrales 
+                        |CIERRACORCHETE;
+
+planetasNeutralesJason::=       ABRECORCHETE cuerpoPlanetasNeutralesJason  
+                                       
+                                |COMA planetasNeutralesJason;
+
+planetasJason ::=               ABRECORCHETE cuerpoPlanetasJason
+                                |COMA planetasJason;
+
+cuerpoPlanetasJason::= 		 NOMBREid DOSPUNTOS COMILLA ID: nombreMiPlaneta {:nombre = nombreMiPlaneta.toString();:}COMILLA cuerpoPlanetasJason  
+				|NAVESid DOSPUNTOS ENTERO: numeroNaves          {:naves =Integer.parseInt( numeroNaves.toString()); :} cuerpoPlanetasJason
+				|PRODUCCIONid DOSPUNTOS ENTERO: produccion1     {:produccion = Integer.parseInt( produccion1.toString()); :} cuerpoPlanetasJason
+				|PORMUERTESid  DOSPUNTOS NUMMUERTES: porMuertes {:porcentajeMuertes =  Float.parseFloat(porMuertes.toString());:} cuerpoPlanetasJason
+				|COMA cuerpoPlanetasJason                       //{:System.out.println( "OOOOOOOOOO" +nombre+ naves+ produccion+porcentajeMuertes+ false );Planeta planetaNuevo = new Planeta(nombre, naves, produccion,porcentajeMuertes, false); Parser.planetas.add(planetaNuevo);:}
+                                |CIERRACORCHETE                                 {:System.out.println( nombre+ naves+ produccion+porcentajeMuertes+ false );Planeta planetaNuevo = new Planeta(nombre, naves, produccion,porcentajeMuertes, false); Parser.planetas.add(planetaNuevo);:} planetasJason   
+                                |CIERRACORCHETE {:System.out.println( nombre+ naves+ produccion+porcentajeMuertes+ false +"neutral");Planeta planetaNuevo = new Planeta(nombre, naves, produccion,porcentajeMuertes, false); Parser.planetas.add(planetaNuevo);:} ;                                 
+
+cuerpoPlanetasNeutralesJason::=  NOMBREid DOSPUNTOS COMILLA ID: nombreMiPlaneta {:nombre = nombreMiPlaneta.toString();:} COMILLA cuerpoPlanetasNeutralesJason  
+				|NAVESid DOSPUNTOS ENTERO: numeroNaves          {:naves = Integer.parseInt( numeroNaves.toString()); :} cuerpoPlanetasNeutralesJason
+				|PRODUCCIONid DOSPUNTOS ENTERO: produccion1     {:produccion = Integer.parseInt( produccion1.toString()); :} cuerpoPlanetasNeutralesJason
+				|PORMUERTESid  DOSPUNTOS NUMMUERTES: porMuertes {:porcentajeMuertes =  Float.parseFloat(porMuertes.toString());:} cuerpoPlanetasNeutralesJason
+				|COMA cuerpoPlanetasNeutralesJason                       
+                                |CIERRACORCHETE                                 {:System.out.println( nombre+ naves+ produccion+porcentajeMuertes+ false +"neutral");PlanetaNeutral planetaNuevo = new PlanetaNeutral(nombre, naves, produccion,porcentajeMuertes, true); Parser.planetasNeutrales.add(planetaNuevo);:} planetasNeutralesJason   
+                                |CIERRACORCHETE ;                                
+
+
+
+jugadoresJason::=		 ABRECORCHETE cuerpoJugadoresJason  
+                                |COMA jugadoresJason;  
+
+cuerpoJugadoresJason::=          NOMBREid DOSPUNTOS COMILLA ID:nomJugador COMILLA
+                                                        {:System.out.println("nombre"); nombre = nomJugador.toString();:}  cuerpoJugadoresJason
+                                |PLANETASid DOSPUNTOS CORCHETEABRE cuerpoPlanetasJugador cuerpoJugadoresJason  
+                                |TIPOJUGADORid DOSPUNTOS COMILLA tipoJugador  COMILLA   cuerpoJugadoresJason
+                                |COMA   cuerpoJugadoresJason
+                                |CIERRACORCHETE 
+                                                {:System.out.println(planetasConquistados.get(0).getNombre()); 
+                                                    System.out.println("guarda****"); 
+                                                    ArrayList<Planeta> plan = new ArrayList(); 
+                                                    Jugador jugador = new Jugador(nombre, planeta.asignarPlanetasArreglos(planetasConquistados,plan ), tipo ); 
+                                                    System.out.println(jugador.getPlanetasConquistados().get(0).getNombre()); 
+                                                    Parser.jugadores.add(jugador); planetasConquistados.clear();
+                                                :} jugadoresJason
+                                |CIERRACORCHETE {:System.out.println(planetasConquistados.get(0).getNombre()); 
+                                                  System.out.println("guarda****"); 
+                                                  ArrayList<Planeta> plan = new ArrayList(); 
+                                                    Jugador jugador = new Jugador(nombre, planeta.asignarPlanetasArreglos(planetasConquistados,plan ), tipo ); 
+                                                    System.out.println(jugador.getPlanetasConquistados().get(0).getNombre()); 
+                                                    Parser.jugadores.add(jugador); planetasConquistados.clear();
+                                                :}   ;        
+
+
+cuerpoPlanetasJugador::=        COMILLA ID : planeta COMILLA {: System.out.println(planeta+"   "+  planetasConquistados.size()); Planeta miPlaneta= new Planeta(); miPlaneta.setNombre(planeta.toString()); planetasConquistados.add(miPlaneta); System.out.println("despues"+planetasConquistados.size());:} cuerpoPlanetasJugador
+                                |COMA cuerpoPlanetasJugador
+                                |CORCHETECIERRA;
+
+
+tipoJugador::=                   FACIL   {:tipo = "COMPUTADORA FACIL"; System.out.println("tipo2");:}
+                                |DIFICIL {:tipo = "COMPUTADORA DIFICIL"; System.out.println("tipo2");:}
+                                |HUMANO  {:tipo = "HUMANO"; System.out.println("tipo2");:} ;
+
+
+booleano::= 			TRUE : bool {:System.out.println(bool+"kjkj"); miboolean = Boolean.parseBoolean(bool.toString()); :}
+                                |FALSE: bool {:System.out.println(bool+"kjkj");miboolean = Boolean.parseBoolean(bool.toString());:};

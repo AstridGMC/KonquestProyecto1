@@ -5,11 +5,21 @@
  */
 package Frontend;
 
+import Backend.Clases.Jugador;
+import Backend.Clases.Mapa;
+import Backend.Clases.Planeta;
+import Backend.Clases.PlanetaNeutral;
+import Backend.Clases.Tablero;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import javax.swing.JFileChooser;
 import java.awt.Image;
 import java.io.File;
+import java.util.ArrayList;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
@@ -18,16 +28,24 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  */
 public class Principal extends javax.swing.JFrame {
 
+    boolean inicioJuego = false;
+    ArrayList<Planeta> planetas;
+    ArrayList<Jugador> jugadores = new ArrayList();
+    ArrayList<PlanetaNeutral> planetasNeutrales = new ArrayList();
+    Tablero tablero;
+    Mapa mapa = new Mapa();
+    Propiedades propiedades;
     JFileChooser seleccionar = new JFileChooser();
+    String prop = null;
+    PanelJuego panelJuego;
 
     /**
      * Creates new form Principal
      */
     public Principal() {
+
         initComponents();
         diseño();
-        panelJuego.setVisible(false);
-        consola.setVisible(false);
         //menuBarra.setBackground(new java.awt.Color(56, 1, 57));
         //this.setResizable(false);
     }
@@ -42,17 +60,6 @@ public class Principal extends javax.swing.JFrame {
     private void initComponents() {
 
         imagenPanel = new javax.swing.JPanel();
-        panelJuego = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        consola = new javax.swing.JTextArea();
-        panelOPcionesJuego = new javax.swing.JPanel();
-        btnJuegoNuevo = new javax.swing.JButton();
-        PanelBotones = new javax.swing.JPanel();
-        btnMedirDistancia = new javax.swing.JButton();
-        btnVistaGeneral = new javax.swing.JButton();
-        btnFinPartida = new javax.swing.JButton();
-        btnFinTurno = new javax.swing.JButton();
-        panelTablero = new javax.swing.JPanel();
         menuBarra = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         nuevoJuego = new javax.swing.JMenuItem();
@@ -70,121 +77,15 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
-        panelJuego.setOpaque(false);
-
-        consola.setBackground(new java.awt.Color(1, 1, 1));
-        consola.setColumns(20);
-        consola.setRows(5);
-        jScrollPane1.setViewportView(consola);
-
-        btnJuegoNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Frontend/Imagenes/5e72b43074a4d_1584575626_5e72b430749ed.png"))); // NOI18N
-        btnJuegoNuevo.setText("Juego Nuevo");
-        btnJuegoNuevo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnJuegoNuevoActionPerformed(evt);
-            }
-        });
-
-        btnMedirDistancia.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Frontend/Imagenes/distancia.png"))); // NOI18N
-        btnMedirDistancia.setText("Medir Distancia");
-        btnMedirDistancia.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnMedirDistanciaActionPerformed(evt);
-            }
-        });
-
-        btnVistaGeneral.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Frontend/Imagenes/naves.png"))); // NOI18N
-        btnVistaGeneral.setText("Vista General de La Flota");
-
-        javax.swing.GroupLayout PanelBotonesLayout = new javax.swing.GroupLayout(PanelBotones);
-        PanelBotones.setLayout(PanelBotonesLayout);
-        PanelBotonesLayout.setHorizontalGroup(
-            PanelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PanelBotonesLayout.createSequentialGroup()
-                .addComponent(btnMedirDistancia)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnVistaGeneral)
-                .addGap(0, 275, Short.MAX_VALUE))
-        );
-        PanelBotonesLayout.setVerticalGroup(
-            PanelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(btnVistaGeneral, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(btnMedirDistancia, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-
-        btnFinPartida.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Frontend/Imagenes/stop.png"))); // NOI18N
-        btnFinPartida.setText("Finalizar Partida");
-
-        btnFinTurno.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Frontend/Imagenes/cambio.png"))); // NOI18N
-        btnFinTurno.setText("Finalizar Turno");
-
-        javax.swing.GroupLayout panelOPcionesJuegoLayout = new javax.swing.GroupLayout(panelOPcionesJuego);
-        panelOPcionesJuego.setLayout(panelOPcionesJuegoLayout);
-        panelOPcionesJuegoLayout.setHorizontalGroup(
-            panelOPcionesJuegoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelOPcionesJuegoLayout.createSequentialGroup()
-                .addComponent(btnJuegoNuevo)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnFinPartida)
-                .addGap(4, 4, 4)
-                .addComponent(btnFinTurno)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(PanelBotones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
-        panelOPcionesJuegoLayout.setVerticalGroup(
-            panelOPcionesJuegoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(PanelBotones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelOPcionesJuegoLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(btnJuegoNuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addComponent(btnFinPartida, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(btnFinTurno, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-
-        javax.swing.GroupLayout panelTableroLayout = new javax.swing.GroupLayout(panelTablero);
-        panelTablero.setLayout(panelTableroLayout);
-        panelTableroLayout.setHorizontalGroup(
-            panelTableroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 489, Short.MAX_VALUE)
-        );
-        panelTableroLayout.setVerticalGroup(
-            panelTableroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 395, Short.MAX_VALUE)
-        );
-
-        javax.swing.GroupLayout panelJuegoLayout = new javax.swing.GroupLayout(panelJuego);
-        panelJuego.setLayout(panelJuegoLayout);
-        panelJuegoLayout.setHorizontalGroup(
-            panelJuegoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1)
-            .addComponent(panelOPcionesJuego, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(panelJuegoLayout.createSequentialGroup()
-                .addGap(222, 222, 222)
-                .addComponent(panelTablero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        panelJuegoLayout.setVerticalGroup(
-            panelJuegoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelJuegoLayout.createSequentialGroup()
-                .addComponent(panelOPcionesJuego, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panelTablero, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-
         javax.swing.GroupLayout imagenPanelLayout = new javax.swing.GroupLayout(imagenPanel);
         imagenPanel.setLayout(imagenPanelLayout);
         imagenPanelLayout.setHorizontalGroup(
             imagenPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panelJuego, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGap(0, 1117, Short.MAX_VALUE)
         );
         imagenPanelLayout.setVerticalGroup(
             imagenPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(imagenPanelLayout.createSequentialGroup()
-                .addComponent(panelJuego, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+            .addGap(0, 578, Short.MAX_VALUE)
         );
 
         menuBarra.setBackground(new java.awt.Color(56, 1, 57));
@@ -264,32 +165,65 @@ public class Principal extends javax.swing.JFrame {
     String fondo = "fondoSol.jpg";
     ImageIcon portada = new ImageIcon(fondo);
     private void imagenPanelComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_imagenPanelComponentResized
-
-        imagen.setBounds(0, 0, imagenPanel.getWidth(), imagenPanel.getHeight());
-        imagen.setIcon(new ImageIcon(portada.getImage().getScaledInstance(imagenPanel.getWidth(), imagenPanel.getHeight(), Image.SCALE_SMOOTH)));
-        imagenPanel.removeAll();
-        imagenPanel.add(imagen);
+        System.out.println(inicioJuego);
+        if (inicioJuego = true && panelJuego != null) {
+            panelJuego.setVisible(false);
+            System.out.println("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+            imagenPanel.add(panelJuego);
+            panelJuego.setVisible(true);
+            panelJuego.setBounds(0, 0, imagenPanel.getWidth(), imagenPanel.getHeight());
+        }
+        if (imagenPanel.getComponents().length>0) {
+            imagen.setBounds(0, 0, imagenPanel.getWidth(), imagenPanel.getHeight());
+            imagen.setIcon(new ImageIcon(portada.getImage().getScaledInstance(imagenPanel.getWidth(), imagenPanel.getHeight(), Image.SCALE_SMOOTH)));
+            imagenPanel.remove(0);
+            imagenPanel.add(imagen);
+            System.out.println(imagenPanel.getComponent(0).getName());
+        }
     }//GEN-LAST:event_imagenPanelComponentResized
 
     private void nuevoJuegoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuevoJuegoActionPerformed
-        // TODO add your handling code here:
+        propiedades = new Propiedades(this);
+        propiedades.setVisible(true);
+        try {
+            mapa = propiedades.getMapa();
+            planetas = propiedades.getPlanetas();
+            planetasNeutrales = propiedades.getPlanetasNeutrales1();
+            jugadores = propiedades.getJugadores();
+            inicioJuego();
+        } catch (Exception e) {
+            System.out.println(e);
+            JOptionPane.showMessageDialog(null, "Error iniciando el Juego");
+        }
     }//GEN-LAST:event_nuevoJuegoActionPerformed
 
     private void cargarArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cargarArchivoActionPerformed
+
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 
-        // FileNameExtensionFilter imgFilter = new FileNameExtensionFilter("JPG & GIF Images", "jpg", "gif"); 
-        //fileChooser.setFileFilter(imgFilter);
+        FileNameExtensionFilter imgFilter = new FileNameExtensionFilter("jpg", "gif", "json");
+        fileChooser.setFileFilter(imgFilter);
         int result = fileChooser.showOpenDialog(this);
         if (result != JFileChooser.CANCEL_OPTION) {
-            System.out.println("nada");
             File fileName = fileChooser.getSelectedFile();
-
             if ((fileName == null) || (fileName.getName().equals(""))) {
-                
-                //  txt.setText("...");
             } else {
+                propiedades = new Propiedades(fileName.getName(), this);
+                propiedades.setVisible(true);
+                try {
+                    mapa = propiedades.getMapa();
+
+                    planetas = propiedades.getPlanetas();
+                    System.out.println(mapa.getTamaño()[0] + mapa.getTamaño()[1]);
+                    planetasNeutrales = propiedades.getPlanetasNeutrales1();
+                    jugadores = propiedades.getJugadores();
+                    System.out.println(planetasNeutrales.size()+""+ jugadores.size());
+                    inicioJuego();
+                } catch (Exception e) {
+                    System.out.println(e);
+                    JOptionPane.showMessageDialog(null, "Error iniciando el Juego");
+                }
                 // txt.setText(fileName.getAbsolutePath());
             }
         }
@@ -303,14 +237,7 @@ public class Principal extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_menuCerrarActionPerformed
 
-    private void btnJuegoNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnJuegoNuevoActionPerformed
-        Propiedades propiedades = new Propiedades();
-        propiedades.setVisible(true);
-    }//GEN-LAST:event_btnJuegoNuevoActionPerformed
-
-    private void btnMedirDistanciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMedirDistanciaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnMedirDistanciaActionPerformed
+    Planeta plan;
 
     void diseño() {
         setTitle("KONQUEST");
@@ -320,29 +247,35 @@ public class Principal extends javax.swing.JFrame {
         imagen.setIcon(new ImageIcon(portada.getImage().getScaledInstance(imagenPanel.getWidth(), imagenPanel.getHeight(), Image.SCALE_SMOOTH)));
         imagenPanel.add(imagen);
     }
-    
-    void obtenerYEscribirConsola(String texto){
-        consola.setText(consola.getText()+"\n"+texto);
+
+    public void inicioJuego() {
+        inicioJuego = true;
+        panelJuego = new PanelJuego(planetas, jugadores, planetasNeutrales, mapa);
+        imagenPanel.add(panelJuego);
+           System.out.println(inicioJuego);
+        if (inicioJuego = true && panelJuego != null) {
+            panelJuego.setVisible(false);
+            imagenPanel.add(panelJuego);
+            panelJuego.setVisible(true);
+            panelJuego.setBounds(0, 0, imagenPanel.getWidth(), imagenPanel.getHeight());
+        }
+        if (imagenPanel.getComponents().length>0) {
+            imagen.setBounds(0, 0, imagenPanel.getWidth(), imagenPanel.getHeight());
+            imagen.setIcon(new ImageIcon(portada.getImage().getScaledInstance(imagenPanel.getWidth(), imagenPanel.getHeight(), Image.SCALE_SMOOTH)));
+            imagenPanel.remove(0);
+            imagenPanel.add(imagen);
+            System.out.println(imagenPanel.getComponent(0).getName());
+        }
     }
 
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel PanelBotones;
-    private javax.swing.JButton btnFinPartida;
-    private javax.swing.JButton btnFinTurno;
-    private javax.swing.JButton btnJuegoNuevo;
-    private javax.swing.JButton btnMedirDistancia;
-    private javax.swing.JButton btnVistaGeneral;
     private javax.swing.JMenuItem cargarArchivo;
-    private javax.swing.JTextArea consola;
     private javax.swing.JPanel imagenPanel;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JMenuBar menuBarra;
     private javax.swing.JMenuItem menuCerrar;
     private javax.swing.JMenuItem nuevoJuego;
-    private javax.swing.JPanel panelJuego;
-    private javax.swing.JPanel panelOPcionesJuego;
-    private javax.swing.JPanel panelTablero;
     // End of variables declaration//GEN-END:variables
 }
