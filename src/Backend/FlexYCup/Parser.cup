@@ -60,14 +60,36 @@ action code {:
 
 terminal    MAPA, PLANETASNEUTRALES, PLANETAS, ID, NOMBREid, NAVESid,PORMUERTESid,ALAZARid, IDid, TAMAÑOid, FILASid, Comilla, FACIL, DIFICIL, HUMANO,
             COLUMNASid, PLANETASNEUTRALESid, MAPACIEGOid, ACUMULARid, NEUTRALES, MOSTRARNAVESid, MOSTRARESTADISTICASid,PLANETASid,TIPOJUGADORid,
-            PRODUCCIONid, FINALIZACIONid, CORCHETECIERRA, CORCHETEABRE, ABRECORCHETE, CIERRACORCHETE, DOSPUNTOS, COMILLA, COMA, IDPLANETA, NUMMUERTES,TRUE,FALSE, IDMAPA, ENTERO, JUGADORES;
+            PRODUCCIONid, FINALIZACIONid, CORCHETECIERRA, CORCHETEABRE, ABRECORCHETE, CIERRACORCHETE, DOSPUNTOS, COMILLA, COMA, IDPLANETA, NUMMUERTES,TRUE,FALSE, IDMAPA, ENTERO, JUGADORES,
+            TABLEROID,MOVIMIENTOSID,PLANETAORIGENID, PLANETADESTINOID,NAVESENVIADASID,TURNOID, UBICACIONID, PATH;
 
-non terminal    S, cuerpoJugadoresJason, cuerpoTamañoId, cuerpoJason,mapaJason, cuerpoNeutrales, planetasNeutralesJason,tipoJugador,cuerpoPlanetasNeutralesJason,
-                cuerpoPlanetasJason, planetasJason, booleano,jugadoresJason, cuerpoPlanetasJugador, nombrePlaneta, nombreJugador, nombreMapa;
+non terminal    S, cuerpoJugadoresJason,cuerpoJsonGuardaProy, cuerpoTamañoId, cuerpoJason,mapaJason, cuerpoNeutrales, planetasNeutralesJason,tipoJugador,cuerpoPlanetasNeutralesJason,
+                cuerpoPlanetasJason, planetasJason, booleano,jugadoresJason, cuerpoPlanetasJugador, nombrePlaneta, nombreJugador, nombreMapa,
+                tableroJason, movimientos, cuerpomovimientos;
 
 start with S;
 
-S ::= ABRECORCHETE cuerpoJason ;
+S ::=    ABRECORCHETE cuerpoJason 
+        |ABRECORCHETE cuerpoJsonGuardaProy;
+
+cuerpoJsonGuardaProy::= 	TABLEROID DOSPUNTOS ABRECORCHETE tableroJason cuerpoJsonGuardaProy
+				|MOVIMIENTOSID DOSPUNTOS CORCHETEABRE movimientos cuerpoJsonGuardaProy
+                                |COMA cuerpoJsonGuardaProy
+                                |CIERRACORCHETE;
+
+
+tableroJason::= 		UBICACIONID DOSPUNTOS COMILLA PATH COMILLA CIERRACORCHETE cuerpoJsonGuardaProy;
+
+
+movimientos::=                  COMILLA ENTERO COMILLA DOSPUNTOS CORCHETEABRE cuerpomovimientos movimientos
+				|COMA movimientos
+                                |CORCHETECIERRA;
+
+cuerpomovimientos ::=           PLANETAORIGENID DOSPUNTOS COMILLA ID COMILLA 	cuerpomovimientos	
+				|PLANETADESTINOID DOSPUNTOS COMILLA ID COMILLA 	cuerpomovimientos
+				|NAVESENVIADASID DOSPUNTOS  ENTERO  cuerpomovimientos		
+				|TURNOID DOSPUNTOS ENTERO  cuerpomovimientos
+				|CIERRACORCHETE  movimientos;
 
 
 cuerpoJason ::=           MAPA DOSPUNTOS ABRECORCHETE mapaJason  cuerpoJason
@@ -161,3 +183,6 @@ tipoJugador::=                   FACIL   {:tipo = "COMPUTADORA FACIL"; System.ou
 
 booleano::= 			TRUE : bool {:System.out.println(bool+"kjkj"); miboolean = Boolean.parseBoolean(bool.toString()); :}
                                 |FALSE: bool {:System.out.println(bool+"kjkj");miboolean = Boolean.parseBoolean(bool.toString());:};
+
+
+

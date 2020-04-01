@@ -67,10 +67,20 @@ carac2 = [_&]
     ("mapaCiego"|{Comilla}"mapaCiego"{Comilla})                       {System.out.println( "19... " +  yytext());return symbol(sym.MAPACIEGOid, yytext(), yyline, yycolumn);}
     ("acumular"|{Comilla}"acumular"{Comilla})                         {System.out.println( "20... " +  yytext());return symbol(sym.ACUMULARid, yytext(), yyline, yycolumn);}
     ("NEUTRALES"|{Comilla}"NEUTRALES"{Comilla})                       {System.out.println( "21... " +  yytext());return symbol(sym.NEUTRALES, yytext(), yyline, yycolumn);}
-    ("mostrarNaves"|{Comilla}"mostrarNaves"{Comilla})                {System.out.println( "22... " +  yytext());return symbol(sym.MOSTRARNAVESid, yytext(), yyline, yycolumn);}
+    ("mostrarNaves"|{Comilla}"mostrarNaves"{Comilla})                 {System.out.println( "22... " +  yytext());return symbol(sym.MOSTRARNAVESid, yytext(), yyline, yycolumn);}
     ("mostrarEstadisticas"|{Comilla}"mostrarEstadisticas"{Comilla})   {System.out.println( "23... " +  yytext());return symbol(sym.MOSTRARESTADISTICASid, yytext(), yyline, yycolumn);}
     ("produccion"|{Comilla}"produccion"{Comilla})                     {System.out.println( "24... " +  yytext());return symbol(sym.PRODUCCIONid, yytext(), yyline, yycolumn);}
     ("finalizacion"|{Comilla}"finalizacion"{Comilla})                 {System.out.println( "25... " +  yytext());return symbol(sym.FINALIZACIONid, yytext(), yyline, yycolumn);}
+    
+    ("UBICACION"|{Comilla}"UBICACION"{Comilla})                         {System.out.println( "28... " +  yytext());return symbol(sym.UBICACIONID, yytext(), yyline, yycolumn);}
+    ("TABLERO"|{Comilla}"TABLERO"{Comilla})                         {System.out.println( "28... " +  yytext());return symbol(sym.TABLEROID, yytext(), yyline, yycolumn);}
+    ("MOVIMIENTOS"|{Comilla}"MOVIMIENTOS"{Comilla})                 {System.out.println( "29... " +  yytext());return symbol(sym.MOVIMIENTOSID, yytext(), yyline, yycolumn);}
+    ("PLANETAORIGEN"|{Comilla}"PLANETAORIGEN"{Comilla})             {System.out.println( "30... " +  yytext());return symbol(sym.PLANETAORIGENID, yytext(), yyline, yycolumn);}
+    ("PLANETADESTINO"|{Comilla}"PLANETADESTINO"{Comilla})           {System.out.println( "31... " +  yytext());return symbol(sym.PLANETADESTINOID, yytext(), yyline, yycolumn);}
+    ("NAVESENVIADAS"|{Comilla}"NAVESENVIADAS"{Comilla})             {System.out.println( "32... " +  yytext());return symbol(sym.NAVESENVIADASID, yytext(), yyline, yycolumn);}
+     ("TURNO"|{Comilla}"TURNO"{Comilla})                            {System.out.println( "33... " +  yytext());return symbol(sym.TURNOID, yytext(), yyline, yycolumn);}
+
+
     ("true"|"TRUE")                                         {System.out.println( "35..." +  yytext());return symbol(sym.TRUE, yytext(), yyline, yycolumn);}
     ("false"|"FALSE")                                       {System.out.println( "36..." +  yytext());return symbol(sym.FALSE, yytext(), yyline, yycolumn);}
     "]"                                                     {System.out.println( "26... " +  yytext());return symbol(sym.CORCHETECIERRA);}
@@ -86,6 +96,7 @@ carac2 = [_&]
     (0".")({D}+)                                            {System.out.println( "34..." +  yytext());return symbol(sym.NUMMUERTES, yytext(), yyline, yycolumn);}
     //{ID}                                                  {System.out.println( "37..." +  yytext());return symbol(sym.ID, yytext(), yyline, yycolumn);}
     ({LetraS}|{carac2})({alphaNum}|{caracEsp})* {System.out.println( "38..." +  yytext());return symbol(sym.IDMAPA, yytext(), yyline, yycolumn);}
+    ("/"({LetraS}|{Signo}|{D})+"/")+(({Letra}|{Signo}|{D})+".json")*  {System.out.println("path"); return symbol(sym.PATH,new String(yytext()), yyline, yycolumn);}
     (\n|\t|\r|\r\n)+ {/*IGNORAR*/}
     (" ")+ {System.out.println("espacio");}
     //({SaltoDeLinea})+ {System.out.println( "salto:" );/*IGNORAR*/}
