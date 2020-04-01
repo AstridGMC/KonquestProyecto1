@@ -74,6 +74,7 @@ public class Propiedades extends javax.swing.JDialog {
         modelo.addColumn("Nombre");
         modelo.addColumn("Tipo");
         this.jugadoresTable.setModel(modelo);
+        jugadoresTable.removeAll();
         setLocation(200, 100);
         try {
             AnalizadorLexico lexico = new AnalizadorLexico(new BufferedReader(new StringReader(creadorJson.leerArchivo(path))));
@@ -82,13 +83,21 @@ public class Propiedades extends javax.swing.JDialog {
         } catch (Exception ex) {
             System.out.println("error ..." + ex);
         }
-
+            mapa = Parser.mapa;
         planetas = Parser.planetas;
-        planetasNeutrales1 = Parser.planetasNeutrales;
+        if(mapa.isAlAzar()){
+            PlanetaNeutral planNeutro = new PlanetaNeutral();
+            planNeutro.GenerarPlanetasAlazarNeutrales(mapa.getNumeroPlanetasNeutrales(), mapa.getPlanetasNeutrales().getProduccion(), mapa.getTamaño()[0], mapa.getTamaño()[1]);
+        }else{
+             planetasNeutrales1 = Parser.planetasNeutrales;
+        }
+        planetas = Parser.planetas;
         jugadores = Parser.jugadores;
-        mapa = Parser.mapa;
         System.out.println(jugadores.size() + " planetas " + planetas.size() + " neutrales " + planetasNeutrales1.size());
         llenarDatos(mapa);
+        panelMapaCreado.setVisible(false);
+        planetas = plan.AsignarEspacios(planetas, (Integer) Altura.getValue(), (Integer) Anchura.getValue());
+        planetasNeutrales1 = plan.AsignarEspaciosNeutrales(planetasNeutrales1, (Integer) Altura.getValue(), (Integer) Anchura.getValue());
         generarTablero();
         //llenarDatos(Parser.mapa);
     }
@@ -778,6 +787,7 @@ public class Propiedades extends javax.swing.JDialog {
     }//GEN-LAST:event_PanelMapaMouseClicked
 
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
+        recopilarDatosPropiedades();
         System.out.println("crea Jason.........");
         JSONObject mapaJson = creadorJson.crearObjetoMapa(recopilarDatosPropiedades());
         JSONObject[] planetasJson = creadorJson.crearPlanetas(planetas);
@@ -806,8 +816,8 @@ public class Propiedades extends javax.swing.JDialog {
                 } else {
                     PlanetaNeutral neutral = new PlanetaNeutral();
                     System.out.println(mapa.getTamaño()[0]+""+ mapa.getTamaño()[1]+""+  mapa.getPlanetasNeutrales().getProduccion());
-                    planetasNeutrales1 = neutral.VerificarPlanetasNeutrales(planetasNeutrales1, mapa.getTamaño()[0], mapa.getTamaño()[1], mapa.getPlanetasNeutrales().getProduccion());
-                    planetas = plan.VerificarPlanetas(planetas, mapa.getTamaño()[0], mapa.getTamaño()[1], mapa.getPlanetasNeutrales().getProduccion());
+                    planetasNeutrales1 = neutral.VerificarPlanetasNeutrales(planetasNeutrales1,(Integer) Altura.getValue(), (Integer) Anchura.getValue(), mapa.getPlanetasNeutrales().getProduccion());
+                    planetas = plan.VerificarPlanetas(planetas,(Integer) Altura.getValue(), (Integer) Anchura.getValue(), mapa.getPlanetasNeutrales().getProduccion());
                     String path = fileName.getAbsolutePath();
                     System.out.print(objetoJuego);
                     System.out.println(idMapaTxt.getText());
@@ -844,20 +854,26 @@ public class Propiedades extends javax.swing.JDialog {
             planetasNeutrales1.add(planetaNeutral);
             planetasNeutrales = planetasNeutrales + 1;
         }
+        Planeta plan= new Planeta();
+        panelMapaCreado.setVisible(false);
+        //planetas = plan.AsignarEspacios(planetas, (Integer) Altura.getValue(), (Integer) Anchura.getValue());
+        //planetasNeutrales1 = plan.AsignarEspaciosNeutrales(planetasNeutrales1, (Integer) Altura.getValue(), (Integer) Anchura.getValue());
         generarTablero();
     }//GEN-LAST:event_spinnerNumeroPlanetasNeutralesStateChanged
 
     private void AnchuraStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_AnchuraStateChanged
         panelMapaCreado.setVisible(false);
-        plan.AsignarEspacios(planetas, (Integer) Altura.getValue(), (Integer) Anchura.getValue());
-        plan.AsignarEspaciosNeutrales(planetasNeutrales1, (Integer) Altura.getValue(), (Integer) Anchura.getValue());
+        Planeta plan= new Planeta();
+        planetas = plan.AsignarEspacios(planetas, (Integer) Altura.getValue(), (Integer) Anchura.getValue());
+        planetasNeutrales1 = plan.AsignarEspaciosNeutrales(planetasNeutrales1, (Integer) Altura.getValue(), (Integer) Anchura.getValue());
         generarTablero();
     }//GEN-LAST:event_AnchuraStateChanged
 
     private void AlturaStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_AlturaStateChanged
         panelMapaCreado.setVisible(false);
-        plan.AsignarEspacios(planetas, (Integer) Altura.getValue(), (Integer) Anchura.getValue());
-        plan.AsignarEspaciosNeutrales(planetasNeutrales1, (Integer) Altura.getValue(), (Integer) Anchura.getValue());
+        Planeta plan= new Planeta();
+        planetas = plan.AsignarEspacios(planetas, (Integer) Altura.getValue(), (Integer) Anchura.getValue());
+        planetasNeutrales1= plan.AsignarEspaciosNeutrales(planetasNeutrales1, (Integer) Altura.getValue(), (Integer) Anchura.getValue());
         generarTablero();
     }//GEN-LAST:event_AlturaStateChanged
 
@@ -873,6 +889,7 @@ public class Propiedades extends javax.swing.JDialog {
         } else {
             alAzar = true;
         }
+        Planeta plan= new Planeta();
         planetas = plan.AsignarEspacios(planetas, (Integer) Altura.getValue(), (Integer) Anchura.getValue());
         planetasNeutrales1 = plan.AsignarEspaciosNeutrales(planetasNeutrales1, (Integer) Altura.getValue(), (Integer) Anchura.getValue());
         panelMapaCreado.setVisible(false);
@@ -1061,8 +1078,8 @@ public class Propiedades extends javax.swing.JDialog {
         PlanetaNeutral neutral = new PlanetaNeutral();
         produccion = mapa.getPlanetasNeutrales().getProduccion();
         System.out.println("............." + planetas.size());
-        planetasNeutrales1 = neutral.VerificarPlanetasNeutrales(planetasNeutrales1, mapa.getTamaño()[0], mapa.getTamaño()[1], mapa.getPlanetasNeutrales().getProduccion());
-        planetas = plan.VerificarPlanetas(planetas, mapa.getTamaño()[0], mapa.getTamaño()[1], mapa.getPlanetasNeutrales().getProduccion());
+        planetasNeutrales1 = neutral.VerificarPlanetasNeutrales(planetasNeutrales1, mapa.getTamaño()[1], mapa.getTamaño()[0], mapa.getPlanetasNeutrales().getProduccion());
+        planetas = plan.VerificarPlanetas(planetas, mapa.getTamaño()[1], mapa.getTamaño()[0], mapa.getPlanetasNeutrales().getProduccion());
         checkMapaCiego.setSelected(mapa.isMapaCiego());
         checkProdAcum.setSelected(mapa.isAcumular());
         alAzar = mapa.isAlAzar();

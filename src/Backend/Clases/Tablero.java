@@ -27,12 +27,12 @@ import javax.swing.border.Border;
  */
 public class Tablero {
 
-    static Planeta planeta;
+    Planeta planeta;
     private String idMapa;
     public JLabel[][] casillas;
     int fila;
     int columna;
-    static JLabel casilla;
+    JLabel casilla;
     boolean tipoJuego = false;
 
     public Tablero(boolean tipoJuego) {
@@ -73,7 +73,7 @@ public class Tablero {
         this.planetas = planetas;
         planetasNeutros = planetasNeutrales;
         System.out.println(".............................");
-        int k = 0;
+        
         int imagenAlto = alto / fila;
         int imagenAncho = ancho / columna;
         JPanel tablero = new JPanel();
@@ -85,12 +85,10 @@ public class Tablero {
                 planeta = buscarLugarPlaneta(planetas, planetasNeutrales, i, j);
 
                 if (planeta != null) {
-                    
-                    System.out.println(planeta.isNeutral());
+                    System.out.println(planeta.getPosicion()[0]+""+planeta.getPosicion()[1]);
                     casilla = new JLabel();
                     casilla.setBorder(border);
-                    k = k + 1;
-                    System.out.println(k);
+                   
                     if (!planeta.isNeutral()) {
                         System.out.println("...........imprimoPlaneta "+planeta.getNombre());
                         ImageIcon planetaImg = new ImageIcon(planeta.getImagenPath());
@@ -258,21 +256,42 @@ public class Tablero {
         };
         casilla.addMouseListener(oyenteDeRaton);
     }
-
     //asigna la fila y columna a cada planeta segun tablero
     public Planeta buscarLugarPlaneta(ArrayList<Planeta> planetas, ArrayList<PlanetaNeutral> planetaNeutral, int fila, int columna) {
+        Planeta planeta11=null;
+        Planeta planeta22 = null;
         for (int i = 0; i < planetas.size(); i++) {
             if (planetas.get(i).getPosicion()[0] == fila && planetas.get(i).getPosicion()[1] == columna) {
-                System.out.println("planeta" + planetas.get(i).getNombre());
-                return planetas.get(i);
+                System.out.println("retornando Planeta.........."+ planetas.size()+planetaNeutral.size());
+                planeta11= planetas.get(i);
             }
         }
         for (int i = 0; i < planetaNeutral.size(); i++) {
             if (planetaNeutral.get(i).getPosicion()[0] == fila && planetaNeutral.get(i).getPosicion()[1] == columna) {
-                System.out.println("No Neutral" + planetaNeutral.get(i).getNombre());
-                return planetaNeutral.get(i);
+                 System.out.println("retornando Planeta.........."+ planetas.size()+planetaNeutral.size());
+                planeta22= planetaNeutral.get(i);
             }
         }
-        return null;
+        
+        if(planeta22 ==null&&planeta11 !=null){
+            return planeta11;
+        }else if(planeta11 ==null&&planeta22 !=null){
+            return planeta22;
+        }else if(planeta22 !=null&&planeta11 !=null){
+            System.out.println("CHOQUE DE PLANETAS.....");
+            if(fila+1<this.fila){
+                int[] posicion = {fila+1, columna};
+                planeta11.setPosicion(posicion);
+            }else{
+                if(columna+1<this.columna){
+                    int[] posicion = {fila, columna+1};
+                    planeta11.setPosicion(posicion);
+                }
+            }
+            return planeta1;
+        }
+            return null;
+        
+        
     }
 }

@@ -138,9 +138,12 @@ public class VerFlotas extends javax.swing.JDialog {
         modelo.addColumn("TurnoLegada");
         tablaInfoFlotas.setModel(modelo);
         tablaInfoFlotas.setRowHeight(25);
-        for (int i = 0; i < jugadorAcciones.size(); i++) {
+        if(!jugadorAcciones.isEmpty()){
+            for (int i = 0; i < jugadorAcciones.size(); i++) {
             modelo.addRow(guardaJuego.combertirArreglo(jugadorAcciones.get(i)));
         }
+        }
+        
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Aceptar;

@@ -64,6 +64,7 @@ public class Principal extends javax.swing.JFrame {
         menuBarra = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         nuevoJuego = new javax.swing.JMenuItem();
+        btnReanudarJuego = new javax.swing.JMenuItem();
         menuCerrar = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         cargarArchivo = new javax.swing.JMenuItem();
@@ -109,6 +110,16 @@ public class Principal extends javax.swing.JFrame {
             }
         });
         jMenu1.add(nuevoJuego);
+
+        btnReanudarJuego.setFont(new java.awt.Font("URW Bookman L", 1, 24)); // NOI18N
+        btnReanudarJuego.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Frontend/Imagenes/abrir.png"))); // NOI18N
+        btnReanudarJuego.setText("Reanudar");
+        btnReanudarJuego.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReanudarJuegoActionPerformed(evt);
+            }
+        });
+        jMenu1.add(btnReanudarJuego);
 
         menuCerrar.setBackground(new java.awt.Color(56, 1, 57));
         menuCerrar.setFont(new java.awt.Font("URW Bookman L", 1, 24)); // NOI18N
@@ -242,6 +253,40 @@ public class Principal extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_menuCerrarActionPerformed
 
+    private void btnReanudarJuegoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReanudarJuegoActionPerformed
+        
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+
+        FileNameExtensionFilter imgFilter = new FileNameExtensionFilter("jpg", "gif","json");
+        fileChooser.setFileFilter(imgFilter);
+        int result = fileChooser.showOpenDialog(this);
+        if (result != JFileChooser.CANCEL_OPTION) {
+            File fileName = fileChooser.getSelectedFile();
+            if ((fileName == null) || (fileName.getName().equals(""))) {
+            } else {
+                PanelJuego panel = new PanelJuego(fileName.getName());
+                panel.setVisible(true);
+                try {
+                    if (propiedades.isCreado()) {
+                        mapa = propiedades.getMapa();
+                        planetas = propiedades.getPlanetas();
+                        planetasNeutrales = propiedades.getPlanetasNeutrales1();
+                        jugadores = propiedades.getJugadores();
+                        System.out.println(planetas.size());
+                        System.out.println(planetasNeutrales.size());
+                    }
+
+                } catch (Exception e) {
+                    System.out.println(e);
+                    JOptionPane.showMessageDialog(null, "Error iniciando el Juego");
+                }
+                // txt.setText(fileName.getAbsolutePath());
+            }
+        
+    }                         
+    }//GEN-LAST:event_btnReanudarJuegoActionPerformed
+
     Planeta plan;
 
     void diseño() {
@@ -276,6 +321,7 @@ public class Principal extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem btnReanudarJuego;
     private javax.swing.JMenuItem cargarArchivo;
     private javax.swing.JPanel imagenPanel;
     private javax.swing.JMenu jMenu1;

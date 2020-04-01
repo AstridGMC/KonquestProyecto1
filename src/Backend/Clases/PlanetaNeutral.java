@@ -55,7 +55,7 @@ public class PlanetaNeutral extends Planeta {
         return j;
     }
     
-      public ArrayList<PlanetaNeutral> VerificarPlanetasNeutrales(ArrayList<PlanetaNeutral> planetas, int filas, int columnas, int produccion){
+    public ArrayList<PlanetaNeutral> VerificarPlanetasNeutrales(ArrayList<PlanetaNeutral> planetas, int filas, int columnas, int produccion){
         Tablero tab = new Tablero();
         for (int j = 0;  j< planetas.size(); j++) {
             System.out.println(".............." + planetas.get(j).getNombre());
@@ -67,9 +67,7 @@ public class PlanetaNeutral extends Planeta {
             if(planeta.getPorcentajeMuertes()<=0){
                 planeta.setPorcentajeMuertes(generarPorcentajeMuertes());
             }
-            if(planeta.getPosicion()==null){
-                planeta.setPosicion(AsignarEspacioPlanetas(filas, columnas));
-            }
+            planeta.setPosicion(AsignarEspacioPlanetas(filas, columnas));
             if(planeta.getProduccion()<=0){
                 planeta.setProduccion(produccion);
             }
@@ -78,7 +76,7 @@ public class PlanetaNeutral extends Planeta {
         return planetas;
     }
     
-    public ArrayList<PlanetaNeutral> GenerarPlanetasAlazarNeutrales(int numeronNeutrales, int produccion, int filas, int planetas){
+    public ArrayList<PlanetaNeutral> GenerarPlanetasAlazarNeutrales(int numeronNeutrales, int produccion, int filas, int columnas){
         ArrayList<PlanetaNeutral> misPlanetas = new ArrayList();
         for (int j = 0; j < numeronNeutrales; j++) {
                 PlanetaNeutral planeta = new PlanetaNeutral( generarNombreAleatorio(),10, produccion, generarPorcentajeMuertes(), true);
@@ -86,7 +84,7 @@ public class PlanetaNeutral extends Planeta {
                 planeta.setPorcentajeMuertes(generarPorcentajeMuertes());
                 planeta.setProduccion(produccion);
                 planeta.setNaves(10);
-                planeta.setPosicion(AsignarEspacioPlanetas(filas, planetas));
+                planeta.setPosicion(AsignarEspacioPlanetas(filas, columnas));
                 planeta.setImagenPath("planetas/neutral.png");
                 misPlanetas.add(planeta);
             

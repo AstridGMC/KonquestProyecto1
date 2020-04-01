@@ -14,7 +14,6 @@ import Backend.Clases.PlanetaNeutral;
 import Backend.Clases.Tablero;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.net.URL;
@@ -45,6 +44,7 @@ public class PanelJuego extends javax.swing.JPanel {
     ManejadorAtaque atacar = new ManejadorAtaque();
     ArrayList<Accion> acciones = new ArrayList();
     PlanetaNeutral planetaNeutro = new PlanetaNeutral();
+    public static Planeta planetaElegido;
     Planeta planeta = new Planeta();
     Accion accion;
     Mapa mapa = new Mapa();
@@ -68,6 +68,7 @@ public class PanelJuego extends javax.swing.JPanel {
         this.jugadores = jugadores;
         this.planetasNeutrales = planetasNeutrales;
         this.mapa = mapa;
+        System.out.println(mapa.getTamaño()[0]+"tama;o mapa "+mapa.getTamaño()[1]);
         crearArreglosAcciones();
         jugadorEnTurno = jugadores.get(numJugador);
         tablero.setJugador(jugadorEnTurno);
@@ -77,6 +78,13 @@ public class PanelJuego extends javax.swing.JPanel {
 
         generarTablero();
     }
+
+    public PanelJuego(String path) {
+        initComponents();
+        
+    }
+    
+    
 
     public ArrayList<Planeta> getPlanetasEscogidos() {
         return planetasEscogidos;
@@ -315,6 +323,11 @@ public class PanelJuego extends javax.swing.JPanel {
 
         btnFinPartida1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Frontend/Imagenes/stop.png"))); // NOI18N
         btnFinPartida1.setText("Finalizar Partida");
+        btnFinPartida1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFinPartida1ActionPerformed(evt);
+            }
+        });
 
         btnFinTurno1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Frontend/Imagenes/cambio.png"))); // NOI18N
         btnFinTurno1.setText("Finalizar Turno");
@@ -473,7 +486,7 @@ public class PanelJuego extends javax.swing.JPanel {
     }//GEN-LAST:event_btnMedirDistanciaActionPerformed
 
     private void btnMedirDistancia1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMedirDistancia1ActionPerformed
-        generarTablero();
+        
     }//GEN-LAST:event_btnMedirDistancia1ActionPerformed
 
     private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
@@ -510,6 +523,7 @@ public class PanelJuego extends javax.swing.JPanel {
 
     private void btnTerminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTerminarActionPerformed
         panelEnviarNaves.setVisible(false);
+        System.out.println("fiN TURNO");
         if (numJugador == (jugadores.size() - 1)) {
             numJugador = 0;
             jugadorEnTurno = jugadores.get(numJugador);
@@ -601,21 +615,28 @@ public class PanelJuego extends javax.swing.JPanel {
     }//GEN-LAST:event_panelTablero1MouseEntered
 
     private void btnVistaGeneral1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVistaGeneral1ActionPerformed
-        VerFlotas flotas = new VerFlotas(null,true,jugadorEnTurno, jugadorEnTurno.getAccionesJugador());
+
+        VerFlotas flotas = new VerFlotas(null,true,jugadorEnTurno, accionesJugadores.get(numJugador));
         flotas.setVisible(true);
+        
+        
     }//GEN-LAST:event_btnVistaGeneral1ActionPerformed
+
+    private void btnFinPartida1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFinPartida1ActionPerformed
+        this.removeAll();
+        this.setVisible(false);
+    }//GEN-LAST:event_btnFinPartida1ActionPerformed
 
     public void generarTablero() {
         panelTablero1.setVisible(false);
         panelTablero1.removeAll();
         panelTablero1.setLayout(new GridLayout(1, 1));
-        tablero.setFila(mapa.getTamaño()[0]);
-        tablero.setColumna(mapa.getTamaño()[1]);
-        panelTablero1.setVisible(false);
+        tablero.setFila(mapa.getTamaño()[1]);
+        tablero.setColumna(mapa.getTamaño()[0]);
+        System.out.println(planetasNeutrales.size()+".............tama;o ");
         panelTablero1.add(tablero.llenarTablero(planetas, planetasNeutrales, 448, 448));
         panelTablero1.setPreferredSize(new Dimension(448, 448));
         panelTablero1.setVisible(true);
-        panelTablero1.repaint();
     }
 
     void obtenerYEscribirConsola(String texto, Color color) {
@@ -636,7 +657,8 @@ public class PanelJuego extends javax.swing.JPanel {
                     isFall = atacar.atacar(ataque.getNavesEnviadas(), ataque.getPlanetasUsados()[0], ataque.getPlanetasUsados()[1]);
                     origen = ataque.getPlanetasUsados()[0];
                     destino = ataque.getPlanetasUsados()[1];
-                    jugadores.get(jugador.BuscarIndiceJugador(jugadores, jugador.getNombre())).getPlanetasConquistados().set(planeta.BuscarIndicePlaneta(planetas, origen.getNombre()), ataque.getPlanetasUsados()[0]);
+                    System.out.println(jugador.BuscarIndiceJugador(jugadores, jugador.getNombre()));
+                    jugadores.get(jugador.BuscarIndiceJugador(jugadores, jugador.getNombre())).getPlanetasConquistados().add(planeta.BuscarIndicePlaneta(planetas, origen.getNombre()), ataque.getPlanetasUsados()[0]);
                     planetas.set(planeta.BuscarIndicePlaneta(planetas, origen.getNombre()), ataque.getPlanetasUsados()[0]);
                     planetas.set(planeta.BuscarIndicePlaneta(planetas, destino.getNombre()), ataque.getPlanetasUsados()[1]);
                     if (isFall) {
